@@ -2,6 +2,7 @@ package com.falynsky.reviewms.app.services.impl;
 
 import com.falynsky.reviewms.app.dto.ReviewDTO;
 import com.falynsky.reviewms.app.enities.Review;
+import com.falynsky.reviewms.app.messaging.ReviewMessageProducer;
 import com.falynsky.reviewms.app.repositories.ReviewRepository;
 import com.falynsky.reviewms.app.services.ReviewService;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.NoSuchElementException;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ReviewMessageProducer reviewMessageProducer;
 
     @Override
     public List<Review> getReviewsByCompanyId(Long companyId) {
@@ -25,6 +27,7 @@ public class ReviewServiceImpl implements ReviewService {
     public void addReview(Long companyId, Review review) {
         review.setCompanyId(companyId);
         reviewRepository.save(review);
+        reviewMessageProducer.sendMessage(review);
     }
 
     @Override
